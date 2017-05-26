@@ -7,8 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DateInfoModel.h"
+
+typedef void(^YearMonthInfoBlock)(DateInfoModel *dateModel);
 
 @interface DatePickerView : UIView
 
+@property (nonatomic, strong) NSDate *currentDate;
 
+- (void)getCurrentDateInfo:(YearMonthInfoBlock)dateInfo;
 @end

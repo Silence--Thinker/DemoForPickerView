@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DateInfoModel.h"
+
+typedef void(^DateInfoBlock)(DateInfoModel *dateModel);
 
 @interface XJPickerDateView : UIView
+
+@property (nonatomic, copy) DateInfoBlock didClickSure;
+@property (nonatomic, strong) NSDate *currentDate;
 
 - (void)show;
 - (void)showInView:(UIView *)view;

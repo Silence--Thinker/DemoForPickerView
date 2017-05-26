@@ -7,14 +7,12 @@
 //
 
 #import "XJPickerDateView.h"
-
-#define COLOR_WITH_HEX_STRING_92c659 [UIColor blackColor]
+#import "DatePickerView.h"
 
 static CGFloat const kPickerHeight = 216;
 static NSTimeInterval const kAnimatimeDuration = 0.35;
-//static CGFloat const kAlpha = 0.45;
 
-@interface XJPickerDateView () <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface XJPickerDateView ()
 
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIImageView *bgImageView;
@@ -22,9 +20,7 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
 @property (nonatomic, strong) UIImageView *animateView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *lineView;
-@property (nonatomic, strong) UIPickerView *pickerView;
-
-@property (nonatomic, strong) UIDatePicker *dateView;
+@property (nonatomic, strong) DatePickerView *pickerView;
 
 @end
 @implementation XJPickerDateView
@@ -74,8 +70,8 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
     _titleLabel = ({
         UILabel *titleLabel = [[UILabel alloc] init];
         titleLabel.text = @"选择喂药时间";
-        titleLabel.font = [UIFont systemFontOfSize:15];
-        titleLabel.textColor = COLOR_WITH_HEX_STRING_92c659;
+        titleLabel.font = [UIFont systemFontOfSize:16];
+        titleLabel.textColor = COLOR_WITH_HEX_STRING_999999;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.frame = CGRectMake(60, 0, CGRectGetWidth(self.bounds) - 120, 40);
         [_animateView addSubview:titleLabel];
@@ -92,7 +88,7 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
     
     
     UIButton * selectedBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    cancelBtn.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 60, 0, 60, 40);
+    selectedBtn.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 60, 0, 60, 40);
     [selectedBtn setTitle:@"确认" forState:UIControlStateNormal];
     selectedBtn.titleLabel.font = [UIFont systemFontOfSize:15];
     [selectedBtn setTitleColor:COLOR_WITH_HEX_STRING_92c659 forState:UIControlStateNormal];
@@ -109,33 +105,11 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
     });
     
     _pickerView = ({
-        UIPickerView *pickerView = [[UIPickerView alloc] init];
+        DatePickerView *pickerView = [[DatePickerView alloc] init];
         pickerView.frame = CGRectMake(0, 40, self.bounds.size.width, kPickerHeight);
-        pickerView.dataSource = self;
-        pickerView.delegate = self;
         [_animateView addSubview:pickerView];
         pickerView;
     });
-}
-
-// MARK - UIPickerViewDataSource, UIPickerViewDelegate
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return 3;
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return 6;
-}
-
-- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
-    if (component == 0) {
-        return 180; //[UIScreen mainScreen].bounds.size.width;
-    }
-    return 65;
-}
-- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component{
-    return 30;
 }
 
 // MARK - action
@@ -145,8 +119,15 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
 }
 
 - (void)didClickSureBtn:(UIButton *)sender {
-    
+    if (self.didClickSure) {
+        [self.pickerView getCurrentDateInfo:self.didClickSure];
+    }
     [self dissMiss];
+}
+
+- (void)setCurrentDate:(NSDate *)currentDate {
+    _currentDate = currentDate;
+    self.pickerView.currentDate = currentDate;
 }
 
 - (void)show {
@@ -159,7 +140,7 @@ static NSTimeInterval const kAnimatimeDuration = 0.35;
     _bgImageView.alpha = 0;
     [view addSubview:self];
     [UIView animateWithDuration:kAnimatimeDuration animations:^{
-       _animateView.frame = CGRectMake(0, CGRectGetHeight(self.bounds) - kPickerHeight - 40, self.bounds.size.width, kPickerHeight + 40);
+        _animateView.frame = CGRectMake(0, CGRectGetHeight(self.bounds) - kPickerHeight - 40, self.bounds.size.width, kPickerHeight + 40);
         _bgImageView.alpha = 1;
     }];
 }

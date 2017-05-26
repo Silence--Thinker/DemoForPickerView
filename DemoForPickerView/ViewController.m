@@ -11,6 +11,8 @@
 
 @interface ViewController ()
 
+@property (nonatomic, weak) IBOutlet UILabel *label;
+
 @end
 
 @implementation ViewController
@@ -21,7 +23,9 @@
 
 - (IBAction)didClickBtn:(UIButton *)sender {
     XJPickerDateView *dateView = [[XJPickerDateView alloc] init];
-    
+    dateView.didClickSure= ^(DateInfoModel *dateModel){
+        self.label.text = dateModel.dateString;
+    };
     [dateView show];
 //    [self.view addSubview:dateView];
 }
